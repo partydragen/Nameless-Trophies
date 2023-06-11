@@ -76,6 +76,11 @@ class UserTrophies {
             date('U')
         ]);
 
+        EventHandler::executeEvent(new UserTrophyReceivedEvent(
+            $this->_user,
+            $trophy
+        ));
+
         self::$_user_trophies_cache[$this->_user->data()->id][$trophy->data()->id] = [];
 
         return true;

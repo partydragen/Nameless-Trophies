@@ -24,6 +24,9 @@ class Trophies_Module extends Module {
 
         // Define URLs which belong to this module
         $pages->add('Trophies', '/panel/trophies', 'pages/panel/trophies.php');
+
+        // Register Events
+        EventHandler::registerEvent(UserTrophyReceivedEvent::class);
     }
 
     public function onInstall() {
