@@ -25,6 +25,17 @@ spl_autoload_register(function ($class) {
     }
 });
 
+// Load classes
+spl_autoload_register(function ($class) {
+    $class_path = str_replace('\\', '/', $class);
+    $class_path = str_replace('Trophies/', '', $class_path);
+
+    $file = join(DIRECTORY_SEPARATOR, array(ROOT_PATH, 'modules', 'Trophies', 'classes', $class_path . '.php'));
+    if (file_exists($file)) {
+        require $file;
+    }
+});
+
 // Initialise module
 require_once(ROOT_PATH . '/modules/Trophies/module.php');
 $module = new Trophies_Module($language, $trophies_language, $pages);

@@ -26,7 +26,12 @@ class Trophies_Module extends Module {
         $pages->add('Trophies', '/panel/trophies', 'pages/panel/trophies.php');
 
         // Register Events
-        EventHandler::registerEvent(UserTrophyReceivedEvent::class);
+        EventHandler::registerEvent(Trophies\Events\UserTrophyReceivedEvent::class);
+
+        // Register Listeners
+        EventHandler::registerListener(UserRegisteredEvent::class, Trophies\Listeners\UserRegisteredListener::class);
+        EventHandler::registerListener(UserValidatedEvent::class, Trophies\Listeners\UserValidatedListener::class);
+        EventHandler::registerListener(TopicCreatedEvent::class, Trophies\Listeners\UserCreatedForumTopicListener::class);
     }
 
     public function onInstall() {
@@ -49,9 +54,6 @@ class Trophies_Module extends Module {
 
     public function onPageLoad($user, $pages, $cache, $smarty, $navs, $widgets, $template) {
         // No actions necessary
-
-        $user_trophies = new UserTrophies($user);
-        $user_trophies->checkTrophyStatus('forum_post', 15);
     }
 
     public function getDebugInfo(): array {

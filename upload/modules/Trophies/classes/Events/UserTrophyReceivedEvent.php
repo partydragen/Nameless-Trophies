@@ -1,5 +1,11 @@
 <?php
 
+namespace Trophies\Events;
+
+use Trophy;
+use AbstractEvent;
+use User;
+use Language;
 
 class UserTrophyReceivedEvent extends AbstractEvent {
     public User $user;

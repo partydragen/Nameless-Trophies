@@ -44,7 +44,6 @@ class UserTrophies {
                 }
             }
         }
-        die();
     }
 
     /**
@@ -76,7 +75,7 @@ class UserTrophies {
             date('U')
         ]);
 
-        EventHandler::executeEvent(new UserTrophyReceivedEvent(
+        EventHandler::executeEvent(new Trophies\Events\UserTrophyReceivedEvent(
             $this->_user,
             $trophy
         ));
