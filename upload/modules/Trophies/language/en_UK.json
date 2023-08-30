@@ -1,4 +1,9 @@
 {
   "general/trophies": "Trophies",
-  "general/user_trophy_received": "User received trophy"
+  "general/user_trophy_received": "User received trophy",
+  "general/new_trophy": "New Trophy",
+  "admin/confirm_delete_trophy": "Are you sure you want to delete this trophy?",
+  "admin/trophy_created_successfully": "Trophy created successfully.",
+  "admin/trophy_updated_successfully": "Trophy updated successfully.",
+  "admin/trophy_deleted_successfully": "Trophy deleted successfully."
 }

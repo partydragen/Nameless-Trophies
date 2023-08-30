@@ -19,7 +19,7 @@ spl_autoload_register(function ($class) {
 
 // Load classes
 spl_autoload_register(function ($class) {
-    $path = join(DIRECTORY_SEPARATOR, array(ROOT_PATH, 'modules', 'Trophies', 'classes', 'Events', $class . '.php'));
+    $path = join(DIRECTORY_SEPARATOR, [ROOT_PATH, 'modules', 'Trophies', 'classes', 'Trophies', $class . '.php']);
     if (file_exists($path)) {
         require_once($path);
     }

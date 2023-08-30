@@ -31,7 +31,20 @@ class Trophies_Module extends Module {
         // Register Listeners
         EventHandler::registerListener(UserRegisteredEvent::class, Trophies\Listeners\UserRegisteredListener::class);
         EventHandler::registerListener(UserValidatedEvent::class, Trophies\Listeners\UserValidatedListener::class);
+
         EventHandler::registerListener(TopicCreatedEvent::class, Trophies\Listeners\UserCreatedForumTopicListener::class);
+        EventHandler::registerListener('prePostCreate', 'Trophies\Listeners\UserCreatedForumPostListener::execute');
+
+        EventHandler::registerListener(ReferralRegistrationEvent::class, Trophies\Listeners\UserReferralRegistrationListener::class);
+
+        // Register Core Trophies
+        Trophies::getInstance()->registerTrophy(new RegistrationTrophy());
+        Trophies::getInstance()->registerTrophy(new ValidationTrophy());
+        Trophies::getInstance()->registerTrophy(new LinkedIntegrationTrophy());
+
+        // Register Forum Trophies
+        Trophies::getInstance()->registerTrophy(new ForumTopicsTrophy());
+        Trophies::getInstance()->registerTrophy(new ForumPostsTrophy());
     }
 
     public function onInstall() {
@@ -53,7 +66,26 @@ class Trophies_Module extends Module {
     }
 
     public function onPageLoad($user, $pages, $cache, $smarty, $navs, $widgets, $template) {
-        // No actions necessary
+        if (defined('BACK_END')) {
+            if ($user->hasPermission('admincp.trophies')) {
+                $cache->setCache('panel_sidebar');
+                if (!$cache->isCached('trophies_order')) {
+                    $order = 98;
+                    $cache->store('trophies_order', 98);
+                } else {
+                    $order = $cache->retrieve('trophies_order');
+                }
+                $navs[2]->add('trophies_divider', mb_strtoupper($this->_trophies_language->get('general', 'trophies'), 'UTF-8'), 'divider', 'top', null, $order, '');
+
+                if (!$cache->isCached('trophies_icon')) {
+                    $icon = '<i class="nav-icon fa-solid fa-link"></i>';
+                    $cache->store('trophies_icon', $icon);
+                } else {
+                    $icon = $cache->retrieve('referrals_icon');
+                }
+                $navs[2]->add('trophies', $this->_trophies_language->get('general', 'trophies'), URL::build('/panel/trophies'), 'top', null, $order + 0.1, $icon);
+            }
+        }
     }
 
     public function getDebugInfo(): array {
