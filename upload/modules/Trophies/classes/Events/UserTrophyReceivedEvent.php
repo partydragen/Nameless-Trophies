@@ -48,6 +48,7 @@ class UserTrophyReceivedEvent extends AbstractEvent implements HasWebhookParams,
             ->addEmbed(function (DiscordEmbed $embed) use ($language) {
                 return $embed
                     ->setTitle($this->user->getDisplayname() . ' has been rewarded the trophy ' . $this->trophy->data()->title)
+                    ->setThumbnail('https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png')
                     ->setDescription($this->trophy->data()->description . "\n\nRewarded: ");
             });
     }

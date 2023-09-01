@@ -2,6 +2,8 @@
   "general/trophies": "Trophies",
   "general/user_trophy_received": "User received trophy",
   "general/new_trophy": "New Trophy",
+  "general/received_trophy": "You have received the trophy {{trophy}}",
+  "general/received_trophy_long": "You have received the trophy {{trophy}} ({{description}})",
   "admin/confirm_delete_trophy": "Are you sure you want to delete this trophy?",
   "admin/trophy_created_successfully": "Trophy created successfully.",
   "admin/trophy_updated_successfully": "Trophy updated successfully.",

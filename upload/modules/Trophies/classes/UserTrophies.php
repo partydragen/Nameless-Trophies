@@ -82,6 +82,35 @@ class UserTrophies {
 
         self::$_user_trophies_cache[$this->_user->data()->id][$trophy->data()->id] = [];
 
+        // Reward any groups
+        $groups = json_decode($trophy->data()->reward_groups, true);
+        foreach ($groups as $group) {
+            $this->_user->addGroup($group);
+        }
+
+        // Reward any credits?
+        if ($trophy->data()->reward_credits_cents > 0 && Util::isModuleEnabled('Store')) {
+            $customer = new Customer($this->_user);
+            $customer->addCents($trophy->data()->reward_credits_cents);
+        }
+
+        // Alert user
+        $trophies_language = new Language(ROOT_PATH . '/modules/Trophies/language', LANGUAGE);
+
+        DB::getInstance()->insert('alerts', [
+            'user_id' => $this->_user->data()->id,
+            'type' => 'trophies',
+            'url' => URL::build('/user/alerts'),
+            'content_short' => $trophies_language->get('general', 'received_trophy', [
+                'trophy' => $trophy->data()->title
+            ]),
+            'content' => $trophies_language->get('general', 'received_trophy_long', [
+                'trophy' => $trophy->data()->title,
+                'description' => $trophy->data()->description,
+            ]),
+            'created' => date('U')
+        ]);
+
         return true;
     }
 }
