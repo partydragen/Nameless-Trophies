@@ -31,20 +31,28 @@ class Trophies_Module extends Module {
         // Register Listeners
         EventHandler::registerListener(UserRegisteredEvent::class, Trophies\Listeners\UserRegisteredListener::class);
         EventHandler::registerListener(UserValidatedEvent::class, Trophies\Listeners\UserValidatedListener::class);
-
-        EventHandler::registerListener(TopicCreatedEvent::class, Trophies\Listeners\UserCreatedForumTopicListener::class);
-        EventHandler::registerListener('prePostCreate', 'Trophies\Listeners\UserCreatedForumPostListener::execute');
-
-        EventHandler::registerListener(ReferralRegistrationEvent::class, Trophies\Listeners\UserReferralRegistrationListener::class);
+        EventHandler::registerListener(UserIntegrationVerifiedEvent::class, Trophies\Listeners\UserLinkedIntegrationListener::class);
 
         // Register Core Trophies
         Trophies::getInstance()->registerTrophy(new RegistrationTrophy());
         Trophies::getInstance()->registerTrophy(new ValidationTrophy());
         Trophies::getInstance()->registerTrophy(new LinkedIntegrationTrophy());
 
-        // Register Forum Trophies
-        Trophies::getInstance()->registerTrophy(new ForumTopicsTrophy());
-        Trophies::getInstance()->registerTrophy(new ForumPostsTrophy());
+        // Register Forum Trophies and listeners if module is enabled
+        if (Util::isModuleEnabled('Forum')) {
+            Trophies::getInstance()->registerTrophy(new ForumTopicsTrophy());
+            Trophies::getInstance()->registerTrophy(new ForumPostsTrophy());
+
+            EventHandler::registerListener(TopicCreatedEvent::class, Trophies\Listeners\UserCreatedForumTopicListener::class);
+            EventHandler::registerListener('prePostCreate', 'Trophies\Listeners\UserCreatedForumPostListener::execute');
+        }
+
+        // Register Referrals Trophies and listeners if module is enabled
+        if (Util::isModuleEnabled('Referrals')) {
+            Trophies::getInstance()->registerTrophy(new ReferralRegistrationsTrophy());
+
+            EventHandler::registerListener(Referrals\Events\ReferralRegistrationEvent::class, Trophies\Listeners\UserReferralRegistrationListener::class);
+        }
     }
 
     public function onInstall() {
