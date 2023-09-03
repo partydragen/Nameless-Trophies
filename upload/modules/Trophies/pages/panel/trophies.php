@@ -55,7 +55,9 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
             foreach (Trophies::getInstance()->getAll() as $trophy) {
                 $trophies_type_list[] = [
                     'name' => Output::getClean($trophy->name()),
+                    'module' => Output::getClean($trophy->getModule()),
                     'description' => Output::getClean($trophy->description()),
+                    'image' => Output::getClean($trophy->getImage()),
                     'select_link' => URL::build('/panel/trophies/' , 'action=new&type=' . $trophy->name()),
                 ];
             }

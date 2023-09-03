@@ -5,8 +5,6 @@ namespace Trophies\Listeners;
 use Trophies;
 use UserIntegrationVerifiedEvent;
 use UserTrophies;
-use User;
-use DB;
 
 class UserLinkedIntegrationListener {
     public static function execute(UserIntegrationVerifiedEvent $event): void {

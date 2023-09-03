@@ -47,4 +47,8 @@ class Trophy {
 
         return false;
     }
+
+    public function getImage(bool $full = false): string {
+        return 'https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png';
+    }
 }

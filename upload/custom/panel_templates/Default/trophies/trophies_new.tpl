@@ -55,7 +55,7 @@
                             {assign var="counter" value=($counter+4)}
                             <div class="col-md-4">
                                 <div class="card shadow h-100">
-                                    <div class="card-header"><strong>{$trophy.description}</strong></div>
+                                    <div class="card-header"><span class="badge badge-secondary">{$trophy.module}</span> <strong>{$trophy.description}</strong></div>
                                     <a href="{$trophy.select_link}" class="btn btn-primary btn-sm btn-block mt-auto">Select</a>
                                 </div>
                             </div>

@@ -38,4 +38,4 @@ spl_autoload_register(function ($class) {
 
 // Initialise module
 require_once(ROOT_PATH . '/modules/Trophies/module.php');
-$module = new Trophies_Module($language, $trophies_language, $pages);
+$module = new Trophies_Module($language, $trophies_language, $pages, $user);

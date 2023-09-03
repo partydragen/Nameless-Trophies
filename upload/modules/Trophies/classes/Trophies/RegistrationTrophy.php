@@ -2,6 +2,14 @@
 
 class RegistrationTrophy extends TrophyBase {
 
+    public function __construct(){
+        EventHandler::registerListener(UserRegisteredEvent::class, Trophies\Listeners\UserRegisteredListener::class);
+    }
+
+    public function getModule(): string {
+        return 'Core';
+    }
+
     public function name(): string {
         return 'registration';
     }

@@ -4,6 +4,8 @@
   "general/new_trophy": "New Trophy",
   "general/received_trophy": "You have received the trophy {{trophy}}",
   "general/received_trophy_long": "You have received the trophy {{trophy}} ({{description}})",
+  "general/user_received_trophy": "{{user}} has been rewarded the trophy {{trophy}}",
+  "general/rewarded_x_for_completion": "Rewarded {{rewarded}} for completion",
   "admin/confirm_delete_trophy": "Are you sure you want to delete this trophy?",
   "admin/trophy_created_successfully": "Trophy created successfully.",
   "admin/trophy_updated_successfully": "Trophy updated successfully.",

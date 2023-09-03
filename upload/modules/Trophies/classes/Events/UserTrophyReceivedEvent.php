@@ -10,6 +10,7 @@ use HasWebhookParams;
 use DiscordDispatchable;
 use DiscordWebhookBuilder;
 use DiscordEmbed;
+use Util;
 
 class UserTrophyReceivedEvent extends AbstractEvent implements HasWebhookParams, DiscordDispatchable {
     public User $user;
@@ -40,16 +41,26 @@ class UserTrophyReceivedEvent extends AbstractEvent implements HasWebhookParams,
     }
 
     public function toDiscordWebhook(): DiscordWebhookBuilder {
-        $language = new Language('core', DEFAULT_LANGUAGE);
+        $trophies_language = new Language(ROOT_PATH . '/modules/Trophies/language', DEFAULT_LANGUAGE);
 
         return DiscordWebhookBuilder::make()
             ->setUsername($this->user->getDisplayname() . ' | ' . SITE_NAME)
             ->setAvatarUrl($this->user->getAvatar(128, true))
-            ->addEmbed(function (DiscordEmbed $embed) use ($language) {
+            ->addEmbed(function (DiscordEmbed $embed) use ($trophies_language) {
                 return $embed
-                    ->setTitle($this->user->getDisplayname() . ' has been rewarded the trophy ' . $this->trophy->data()->title)
-                    ->setThumbnail('https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png')
-                    ->setDescription($this->trophy->data()->description . "\n\nRewarded: ");
+                    ->setTitle($trophies_language->get('general', 'user_received_trophy', [
+                        'user' => $this->user->getDisplayname(),
+                        'trophy' => $this->trophy->data()->title
+                    ]))
+                    ->setThumbnail($this->trophy->getImage(true))
+                    ->setDescription($this->trophy->data()->description)
+                    ->setFooter(($this->trophy->data()->reward_credits_cents > 0 && Util::isModuleEnabled('Store')) ? $trophies_language->get('general', 'rewarded_x_for_completion', [
+                        'rewarded' => $this->fromCents($this->trophy->data()->reward_credits_cents) . ' Store Credits'
+                    ]) : null);
             });
+    }
+
+    public static function fromCents(int $cents): string {
+        return sprintf('%0.2f', $cents / 100);
     }
 }

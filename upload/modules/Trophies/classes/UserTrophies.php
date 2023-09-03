@@ -104,10 +104,11 @@ class UserTrophies {
             'content_short' => $trophies_language->get('general', 'received_trophy', [
                 'trophy' => $trophy->data()->title
             ]),
-            'content' => $trophies_language->get('general', 'received_trophy_long', [
-                'trophy' => $trophy->data()->title,
-                'description' => $trophy->data()->description,
-            ]),
+            'content' => $trophies_language->get('general', 'received_trophy', [
+                'trophy' => $trophy->data()->title
+            ]) . (($trophy->data()->reward_credits_cents > 0 && Util::isModuleEnabled('Store')) ? $trophies_language->get('general', 'rewarded_x_for_completion', [
+                'rewarded' => '(' . Store::fromCents($trophy->data()->reward_credits_cents) . ' Store Credits)'
+            ]) : ''),
             'created' => date('U')
         ]);
 

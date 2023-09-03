@@ -2,6 +2,14 @@
 
 class LinkedIntegrationTrophy extends TrophyBase {
 
+    public function __construct(){
+        EventHandler::registerListener(UserIntegrationVerifiedEvent::class, Trophies\Listeners\UserLinkedIntegrationListener::class);
+    }
+
+    public function getModule(): string {
+        return 'Core';
+    }
+
     public function name(): string {
         return 'linkedIntegration';
     }

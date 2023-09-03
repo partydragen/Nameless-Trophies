@@ -11,7 +11,7 @@ class Trophies_Module extends Module {
     private Language $_language;
     private Language $_trophies_language;
 
-    public function __construct($language, $trophies_language, $pages){
+    public function __construct(Language $language, Language $trophies_language, Pages $pages, User $user){
         $this->_language = $language;
         $this->_trophies_language = $trophies_language;
 
@@ -28,30 +28,28 @@ class Trophies_Module extends Module {
         // Register Events
         EventHandler::registerEvent(Trophies\Events\UserTrophyReceivedEvent::class);
 
-        // Register Listeners
-        EventHandler::registerListener(UserRegisteredEvent::class, Trophies\Listeners\UserRegisteredListener::class);
-        EventHandler::registerListener(UserValidatedEvent::class, Trophies\Listeners\UserValidatedListener::class);
-        EventHandler::registerListener(UserIntegrationVerifiedEvent::class, Trophies\Listeners\UserLinkedIntegrationListener::class);
-
         // Register Core Trophies
         Trophies::getInstance()->registerTrophy(new RegistrationTrophy());
         Trophies::getInstance()->registerTrophy(new ValidationTrophy());
         Trophies::getInstance()->registerTrophy(new LinkedIntegrationTrophy());
+        Trophies::getInstance()->registerTrophy(new AccountAgeTrophy($user));
+        Trophies::getInstance()->registerTrophy(new CustomTrophy());
 
         // Register Forum Trophies and listeners if module is enabled
         if (Util::isModuleEnabled('Forum')) {
             Trophies::getInstance()->registerTrophy(new ForumTopicsTrophy());
             Trophies::getInstance()->registerTrophy(new ForumPostsTrophy());
+        }
 
-            EventHandler::registerListener(TopicCreatedEvent::class, Trophies\Listeners\UserCreatedForumTopicListener::class);
-            EventHandler::registerListener('prePostCreate', 'Trophies\Listeners\UserCreatedForumPostListener::execute');
+        // Register Store Trophies and listeners if module is enabled
+        if (Util::isModuleEnabled('Store')) {
+            Trophies::getInstance()->registerTrophy(new StorePurchasesTrophy());
+            Trophies::getInstance()->registerTrophy(new StoreMoneySpentTrophy());
         }
 
         // Register Referrals Trophies and listeners if module is enabled
         if (Util::isModuleEnabled('Referrals')) {
             Trophies::getInstance()->registerTrophy(new ReferralRegistrationsTrophy());
-
-            EventHandler::registerListener(Referrals\Events\ReferralRegistrationEvent::class, Trophies\Listeners\UserReferralRegistrationListener::class);
         }
     }
 
