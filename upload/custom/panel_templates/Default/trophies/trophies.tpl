@@ -46,7 +46,7 @@
                                     <tbody>
                                     {foreach from=$TROPHIES_LIST item=trophy}
                                         <tr>
-                                            <td width="64px"><img src="https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png" height="50px"></td>
+                                            <td style="width:45px"><img src="{$trophy.image}" style="height:45px; width:45px;"></td>
                                             <td>
                                                 <a href="{$trophy.edit_link}">{$trophy.title}</a>
                                                 <br />{$trophy.description}

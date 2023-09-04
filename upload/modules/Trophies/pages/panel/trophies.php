@@ -21,18 +21,24 @@ const PANEL_PAGE = 'trophies';
 $page_title = $trophies_language->get('general', 'trophies');
 require_once(ROOT_PATH . '/core/templates/backend_init.php');
 
+// Load modules + template
+Module::loadPage($user, $pages, $cache, $smarty, [$navigation, $cc_nav, $staffcp_nav], $widgets, $template);
+
 if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
     // View trophies
     $trophies = [];
     $trophies_query = DB::getInstance()->query('SELECT * FROM nl2_trophies');
-    foreach ($trophies_query->results() as $trophy) {
+    foreach ($trophies_query->results() as $item) {
+        $trophy = new Trophy(null, null, $item);
+
         $trophies[] = [
-            'id' => $trophy->id,
-            'title' => Output::getClean($trophy->title),
-            'description' => Output::getClean($trophy->description),
-            'score' => Output::getClean($trophy->score),
-            'type' => Output::getClean($trophy->type),
-            'edit_link' => URL::build('/panel/trophies/', 'trophy=' . $trophy->id)
+            'id' => $trophy->data()->id,
+            'title' => Output::getClean($trophy->data()->title),
+            'description' => Output::getClean($trophy->data()->description),
+            'score' => Output::getClean($trophy->data()->score),
+            'type' => Output::getClean($trophy->data()->type),
+            'image' => $trophy->getImage(),
+            'edit_link' => URL::build('/panel/trophies/', 'trophy=' . $trophy->data()->id)
         ];
     }
 
@@ -57,7 +63,6 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                     'name' => Output::getClean($trophy->name()),
                     'module' => Output::getClean($trophy->getModule()),
                     'description' => Output::getClean($trophy->description()),
-                    'image' => Output::getClean($trophy->getImage()),
                     'select_link' => URL::build('/panel/trophies/' , 'action=new&type=' . $trophy->name()),
                 ];
             }
@@ -69,7 +74,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                 'TROPHIES_TYPE_LIST' => $trophies_type_list
             ]);
 
-            $template_file = 'trophies/trophies_new.tpl';
+            $template_file = 'trophies/trophies_new_step_1.tpl';
         } else {
             // Create new trophy
             $trophy_type = Trophies::getInstance()->getTrophy($_GET['type']);
@@ -115,7 +120,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                         $trophy_type->settingsPageLoad($fields, $template, $trophy, $validation);
 
                         Session::flash('trophies_success', $trophies_language->get('admin', 'trophy_created_successfully'));
-                        Redirect::to(URL::build('/panel/trophies'));
+                        Redirect::to(URL::build('/panel/trophies/', 'trophy=' . $trophy->data()->id));
                     } else {
                         // Errors
                         $errors = $validation->errors();
@@ -149,7 +154,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                 })
             ');
 
-            $template_file = 'trophies/trophies_edit.tpl';
+            $template_file = 'trophies/trophies_new_step_2.tpl';
         }
     } else if (isset($_GET['trophy'])) {
         // Edit existing trophy
@@ -170,38 +175,73 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
             $errors = [];
 
             if (Token::check(Input::get('token'))) {
-                $validation = Validate::check($_POST, [
-                    'title' => [
-                        Validate::REQUIRED => true,
-                        Validate::MIN => 1,
-                        Validate::MAX => 64
-                    ],
-                    'description' => [
-                        Validate::REQUIRED => true,
-                        Validate::MIN => 1,
-                        Validate::MAX => 2048
-                    ]
-                ]);
-
-                if ($validation->passed()) {
-                    // Save to database
-                    DB::getInstance()->update('trophies', $trophy->data()->id, [
-                        'title' => Input::get('title'),
-                        'description' => Input::get('description'),
-                        'score' => $_POST['score'] ?? 1,
-                        'parent' => 0,
-                        'reward_groups' => json_encode(isset($_POST['add_groups']) && is_array($_POST['add_groups']) ? $_POST['add_groups'] : []),
-                        'reward_credits_cents' => (int) (string) ((float) preg_replace("/[^0-9.]/", "", Input::get('add_credits')) * 100),
-                        'enabled' => 1
+                if (Input::get('type') == 'settings') {
+                    $validation = Validate::check($_POST, [
+                        'title' => [
+                            Validate::REQUIRED => true,
+                            Validate::MIN => 1,
+                            Validate::MAX => 64
+                        ],
+                        'description' => [
+                            Validate::REQUIRED => true,
+                            Validate::MIN => 1,
+                            Validate::MAX => 2048
+                        ]
                     ]);
 
-                    $trophy_type->settingsPageLoad($fields, $template, $trophy, $validation);
+                    if ($validation->passed()) {
+                        // Save to database
+                        DB::getInstance()->update('trophies', $trophy->data()->id, [
+                            'title' => Input::get('title'),
+                            'description' => Input::get('description'),
+                            'score' => $_POST['score'] ?? 1,
+                            'parent' => 0,
+                            'reward_groups' => json_encode(isset($_POST['add_groups']) && is_array($_POST['add_groups']) ? $_POST['add_groups'] : []),
+                            'reward_credits_cents' => (int)(string)((float)preg_replace("/[^0-9.]/", "", Input::get('add_credits')) * 100),
+                            'enabled' => 1
+                        ]);
 
-                    Session::flash('trophies_success', $trophies_language->get('admin', 'trophy_updated_successfully'));
-                    Redirect::to(URL::build('/panel/trophies'));
-                } else {
-                    // Errors
-                    $errors = $validation->errors();
+                        $trophy_type->settingsPageLoad($fields, $template, $trophy, $validation);
+
+                        Session::flash('trophies_success', $trophies_language->get('admin', 'trophy_updated_successfully'));
+                        Redirect::to(URL::build('/panel/trophies'));
+                    } else {
+                        // Errors
+                        $errors = $validation->errors();
+                    }
+                } else if (Input::get('type') == 'image') {
+                    // Trophy image
+                    if (!is_dir(ROOT_PATH . '/uploads/trophies')) {
+                        try {
+                            mkdir(ROOT_PATH . '/uploads/trophies');
+                        } catch (Exception $e) {
+                            $errors[] = $trophies_language->get('admin', 'unable_to_create_image_directory');
+                        }
+                    }
+
+                    if (!count($errors)) {
+                        $image = new Bulletproof\Image($_FILES);
+
+                        $image->setSize(1000, 2 * 1048576)
+                            ->setMime(['jpeg', 'png', 'gif'])
+                            ->setDimension(200, 000)
+                            ->setLocation(ROOT_PATH . '/uploads/trophies', 0777);
+
+                        if ($image['trophy_image']) {
+                            $upload = $image->upload();
+
+                            if ($upload) {
+                                DB::getInstance()->update('trophies', $trophy->data()->id, [
+                                    'image' => $image->getName() . '.' . $image->getMime()
+                                ]);
+
+                                Session::flash('trophies_success', $trophies_language->get('admin', 'image_updated_successfully'));
+                                Redirect::to(URL::build('/panel/trophies'));
+                            } else {
+                                $errors[] = $trophies_language->get('admin', 'unable_to_upload_image', ['error' => Output::getClean($image->getError())]);
+                            }
+                        }
+                    }
                 }
             } else {
                 $errors[] = $language->get('general', 'invalid_token');
@@ -218,6 +258,9 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
             'BACK' => $language->get('general', 'back'),
             'BACK_LINK' => URL::build('/panel/trophies'),
             'FIELDS' => $fields->getAll(),
+            'IMAGE_VALUE' => $trophy->getImage(),
+            'UPLOAD_NEW_IMAGE' => $trophies_language->get('admin', 'upload_new_image'),
+            'BROWSE' => $language->get('general', 'browse'),
             'ALL_GROUPS' => DB::getInstance()->orderAll('groups', '`order`', 'ASC')->results(),
             'ADD_GROUPS_VALUE' => json_decode($trophy->data()->reward_groups, true) ?? [],
             'ADD_CREDITS_VALUE' => Output::getClean(sprintf('%0.2f', $trophy->data()->reward_credits_cents / 100))
@@ -248,9 +291,6 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
         Redirect::to(URL::build('/panel/trophies'));
     }
 }
-
-// Load modules + template
-Module::loadPage($user, $pages, $cache, $smarty, [$navigation, $cc_nav, $staffcp_nav], $widgets, $template);
 
 if (Session::exists('trophies_success')) {
     $success = Session::flash('trophies_success');

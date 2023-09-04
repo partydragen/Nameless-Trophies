@@ -44,54 +44,78 @@
                         <!-- Success and Error Alerts -->
                         {include file='includes/alerts.tpl'}
 
-                        <form action="" method="post">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <form action="" method="post">
 
-                            {assign var=counter value=1}
-                            {foreach $FIELDS as $field_key => $field}
-                                <div class="form-group">
-                                    <label for="input{$field_key}">{$field.name}</label>
-                                    {if $field.type eq 1}
-                                        <input type="text" name="{$field_key}" class="form-control" id="input{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
-                                    {else if $field.type eq 2}
-                                        <textarea name="{$field_key}" class="form-control" id="{$field_key}" placeholder="{$field.placeholder}" tabindex="{$counter++}"></textarea>
-                                    {else if $field.type eq 3}
-                                        <input type="date" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" tabindex="{$counter++}">
-                                    {else if $field.type eq 4}
-                                        <input type="password" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
-                                    {else if $field.type eq 5}
-                                        <select class="form-control" name="{$field_key}" id="{$field_key}" {if $field.required}required{/if}>
-                                            {foreach from=$field.options item=option}
-                                                <option value="{$option.value}" {if $option.value eq $field.value} selected{/if}>{$option.option}</option>
+                                    {assign var=counter value=1}
+                                    {foreach $FIELDS as $field_key => $field}
+                                        <div class="form-group">
+                                            <label for="input{$field_key}">{$field.name}</label>
+                                            {if $field.type eq 1}
+                                                <input type="text" name="{$field_key}" class="form-control" id="input{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
+                                            {else if $field.type eq 2}
+                                                <textarea name="{$field_key}" class="form-control" id="{$field_key}" placeholder="{$field.placeholder}" tabindex="{$counter++}"></textarea>
+                                            {else if $field.type eq 3}
+                                                <input type="date" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" tabindex="{$counter++}">
+                                            {else if $field.type eq 4}
+                                                <input type="password" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
+                                            {else if $field.type eq 5}
+                                                <select class="form-control" name="{$field_key}" id="{$field_key}" {if $field.required}required{/if}>
+                                                    {foreach from=$field.options item=option}
+                                                        <option value="{$option.value}" {if $option.value eq $field.value} selected{/if}>{$option.option}</option>
+                                                    {/foreach}
+                                                </select>
+                                            {else if $field.type eq 6}
+                                                <input type="number" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.name}" tabindex="{$counter++}"{if $field.required} required{/if}>
+                                            {else if $field.type eq 7}
+                                                <input type="email" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
+                                            {/if}
+                                        </div>
+                                    {/foreach}
+
+                                    <div class="form-group">
+                                        <label for="inputAddCredits">Reward any store credits for completion?</label>
+                                        <input type="number" class="form-control" id="inputAddCredits" name="add_credits" value="{$ADD_CREDITS_VALUE}" step="0.01" min="0.00" value="0.00">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="inputAddGroups">Reward any groups for completion?</label>
+                                        <select name="add_groups[]" id="inputAddGroups" class="form-control" multiple>
+                                            {foreach from=$ALL_GROUPS item=item}
+                                                <option value="{$item->id}"{if in_array($item->id, $ADD_GROUPS_VALUE)} selected{/if}>{$item->name|escape}</option>
                                             {/foreach}
                                         </select>
-                                    {else if $field.type eq 6}
-                                        <input type="number" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.name}" tabindex="{$counter++}"{if $field.required} required{/if}>
-                                    {else if $field.type eq 7}
-                                        <input type="email" name="{$field_key}" class="form-control" id="{$field_key}" value="{$field.value}" placeholder="{$field.placeholder}" tabindex="{$counter++}"{if $field.required} required{/if}>
-                                    {/if}
+                                    </div>
+
+                                    <div class="form-group">
+                                        <input type="hidden" name="token" value="{$TOKEN}">
+                                        <input type="hidden" name="type" value="settings">
+                                        <input type="submit" class="btn btn-primary" value="{$SUBMIT}">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                <h5>Trophy Image</h5>
+                                <form action="" method="post" enctype="multipart/form-data" style="display:inline;">
+                                    <div class="form-group">
+
+                                        <img src="{$IMAGE_VALUE}" class="img-thumbnail" style="height:200px;width:200px;"><br />
+                                        <strong>{$UPLOAD_NEW_IMAGE}</strong><br />
+                                        <label class="btn btn-secondary">
+                                            {$BROWSE} <input type="file" name="trophy_image" hidden/>
+                                        </label>
+
+                                    </div>
+
+                                    <input type="hidden" name="token" value="{$TOKEN}">
+                                    <input type="hidden" name="type" value="image">
+                                    <input type="submit" value="{$SUBMIT}" class="btn btn-primary">
+                                </form>
                                 </div>
-                            {/foreach}
-
-                            <div class="form-group">
-                                <label for="inputAddCredits">Reward any store credits for completion?</label>
-                                <input type="number" class="form-control" id="inputAddCredits" name="add_credits" value="{$ADD_CREDITS_VALUE}" step="0.01" min="0.00" value="0.00">
                             </div>
-
-                            <div class="form-group">
-                                <label for="inputAddGroups">Reward any groups for completion?</label>
-                                <select name="add_groups[]" id="inputAddGroups" class="form-control" multiple>
-                                    {foreach from=$ALL_GROUPS item=item}
-                                        <option value="{$item->id}"{if in_array($item->id, $ADD_GROUPS_VALUE)} selected{/if}>{$item->name|escape}</option>
-                                    {/foreach}
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <input type="hidden" name="token" value="{$TOKEN}">
-                                <input type="hidden" name="type" value="settings">
-                                <input type="submit" class="btn btn-primary" value="{$SUBMIT}">
-                            </div>
-                        </form>
+                        </div>
 
                         </br>
 

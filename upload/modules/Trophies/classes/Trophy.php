@@ -49,6 +49,6 @@ class Trophy {
     }
 
     public function getImage(bool $full = false): string {
-        return 'https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png';
+        return (isset($this->data()->image) && !is_null($this->data()->image) ? (($full ? rtrim(URL::getSelfURL(), '/') : '') . (defined('CONFIG_PATH') ? CONFIG_PATH : '') . '/uploads/trophies/' . Output::getClean(Output::getDecoded($this->data()->image))) : 'https://cdn.discordapp.com/attachments/772216990181621800/1118604055133040720/winner-trophy-in-flat-style-free-png.png');
     }
 }

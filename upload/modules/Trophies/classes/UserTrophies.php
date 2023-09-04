@@ -21,7 +21,7 @@ class UserTrophies {
         if (isset(self::$_user_trophies_cache[$user->data()->id])) {
             $this->_trophies_data = self::$_user_trophies_cache[$user->data()->id];
         } else {
-            $trophies_query = DB::getInstance()->query('SELECT * FROM nl2_users_trophies WHERE user_id = ?', [$this->_user->data()->id]);
+            $trophies_query = DB::getInstance()->query('SELECT nl2_trophies.*, trophy_id, received FROM `nl2_users_trophies` INNER JOIN nl2_trophies ON trophy_id = nl2_trophies.id WHERE user_id = ?', [$this->_user->data()->id]);
             if ($trophies_query->count()) {
                 foreach ($trophies_query->results() as $item) {
                     $this->_trophies_data[$item->trophy_id] = $item;
@@ -30,6 +30,15 @@ class UserTrophies {
 
             self::$_user_trophies_cache[$user->data()->id] = $this->_trophies_data;
         }
+    }
+
+    public function getTrophies(): array {
+        $trophies = [];
+        foreach ($this->_trophies_data as $trophy) {
+            $trophies[$trophy->trophy_id] = new Trophy(null, null, $trophy);
+        }
+
+        return $trophies;
     }
 
     public function checkTrophyStatus(string $trophy_type, int $score) {
@@ -106,9 +115,9 @@ class UserTrophies {
             ]),
             'content' => $trophies_language->get('general', 'received_trophy', [
                 'trophy' => $trophy->data()->title
-            ]) . (($trophy->data()->reward_credits_cents > 0 && Util::isModuleEnabled('Store')) ? $trophies_language->get('general', 'rewarded_x_for_completion', [
-                'rewarded' => '(' . Store::fromCents($trophy->data()->reward_credits_cents) . ' Store Credits)'
-            ]) : ''),
+            ]) . (($trophy->data()->reward_credits_cents > 0 && Util::isModuleEnabled('Store')) ? ' (' . $trophies_language->get('general', 'rewarded_x_for_completion', [
+                'rewarded' => Store::fromCents($trophy->data()->reward_credits_cents) . ' Store Credits'
+            ]) . ')' : ''),
             'created' => date('U')
         ]);
 
