@@ -50,6 +50,10 @@ class Trophies_Module extends Module {
         if (Util::isModuleEnabled('Referrals')) {
             Trophies::getInstance()->registerTrophy(new ReferralRegistrationsTrophy());
         }
+        
+        if (Util::isModuleEnabled('Members')) {
+            MemberListManager::getInstance()->registerListProvider(new MostTrophiesMemberListProvider($trophies_language));
+        }
 
         // Check if module version changed
         $cache->setCache('trophies_module_cache');
