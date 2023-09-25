@@ -51,8 +51,19 @@ class Trophies_Module extends Module {
             Trophies::getInstance()->registerTrophy(new ReferralRegistrationsTrophy());
         }
         
+        // Members module integration
         if (Util::isModuleEnabled('Members')) {
             MemberListManager::getInstance()->registerListProvider(new MostTrophiesMemberListProvider($trophies_language));
+
+            MemberListManager::getInstance()->registerMemberMetadataProvider(function (User $member) use ($trophies_language) {
+                return [
+                    $trophies_language->get('general', 'trophies') =>
+                        DB::getInstance()->query(
+                            'SELECT COUNT(user_id) AS `count` FROM nl2_users_trophies WHERE user_id = ? GROUP BY user_id ORDER BY `count`',
+                            [$member->data()->id]
+                        )->first()->count,
+                ];
+            });
         }
 
         // Check if module version changed
