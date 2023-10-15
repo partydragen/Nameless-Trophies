@@ -50,7 +50,7 @@ class Trophies_Module extends Module {
         if (Util::isModuleEnabled('Referrals')) {
             Trophies::getInstance()->registerTrophy(new ReferralRegistrationsTrophy());
         }
-        
+
         // Members module integration
         if (Util::isModuleEnabled('Members')) {
             MemberListManager::getInstance()->registerListProvider(new MostTrophiesMemberListProvider($trophies_language));
@@ -59,7 +59,7 @@ class Trophies_Module extends Module {
                 return [
                     $trophies_language->get('general', 'trophies') =>
                         DB::getInstance()->query(
-                            'SELECT COUNT(user_id) AS `count` FROM nl2_users_trophies WHERE user_id = ? GROUP BY user_id ORDER BY `count`',
+                            'SELECT COUNT(user_id) AS `count` FROM nl2_users_trophies WHERE user_id = ?',
                             [$member->data()->id]
                         )->first()->count,
                 ];
