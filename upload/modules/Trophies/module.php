@@ -16,9 +16,9 @@ class Trophies_Module extends Module {
         $this->_trophies_language = $trophies_language;
 
         $name = 'Trophies';
-        $author = '<a href="https://partydragen.com" target="_blank" rel="nofollow noopener">Partydragen</a>';
+        $author = '<a href="https://partydragen.com" target="_blank" rel="nofollow noopener">Partydragen</a> and my <a href="https://partydragen.com/supporters/" target="_blank">Sponsors</a>';
         $module_version = '1.0.0';
-        $nameless_version = '2.1.0';
+        $nameless_version = '2.1.2';
 
         parent::__construct($this, $name, $author, $module_version, $nameless_version);
 
