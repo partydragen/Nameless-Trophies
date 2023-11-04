@@ -9,7 +9,7 @@
 // Initialise trophies language
 $trophies_language = new Language(ROOT_PATH . '/modules/Trophies/language', LANGUAGE);
 
-require_once(ROOT_PATH . '/modules/Store/autoload.php');
+require_once(ROOT_PATH . '/modules/Trophies/autoload.php');
 
 // Initialise module
 require_once(ROOT_PATH . '/modules/Trophies/module.php');
