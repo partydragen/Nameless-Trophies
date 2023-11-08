@@ -56,7 +56,7 @@
                             <div class="col-md-4">
                                 <div class="card shadow h-100">
                                     <div class="card-header"><span class="badge badge-secondary">{$trophy.module}</span> <strong>{$trophy.description}</strong></div>
-                                    <a href="{$trophy.select_link}" class="btn btn-primary btn-sm btn-block mt-auto">Select</a>
+                                    {if $trophy.enabled}<a href="{$trophy.select_link}" class="btn btn-primary btn-sm btn-block mt-auto">Select</a>{else}<a href="{$trophy.select_link}" class="btn btn-primary btn-sm btn-block mt-auto disabled">Patreon Early Access</a>{/if}
                                 </div>
                             </div>
                             {/foreach}

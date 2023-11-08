@@ -3,7 +3,7 @@
 class StorePurchasesTrophy extends TrophyBase {
 
     public function __construct(){
-        EventHandler::registerListener(PaymentCompletedEvent::class, Trophies\Listeners\StorePaymentListener::class);
+
     }
 
     public function getModule(): string {
@@ -18,8 +18,11 @@ class StorePurchasesTrophy extends TrophyBase {
         return 'User made X purchases on the Store';
     }
 
-
     public function settingsPageLoad(Fields $fields, TemplateBase $template, Trophy $trophy, ?Validate $validation): void {
         $fields->add('score', Fields::NUMBER, 'Amount of store purchases', true, $trophy->exists() ? $trophy->data()->score : 0);
+    }
+
+    public function enabled(): bool {
+        return false;
     }
 }

@@ -3,7 +3,7 @@
 class LinkedIntegrationTrophy extends TrophyBase {
 
     public function __construct(){
-        EventHandler::registerListener(UserIntegrationVerifiedEvent::class, Trophies\Listeners\UserLinkedIntegrationListener::class);
+
     }
 
     public function getModule(): string {
@@ -37,5 +37,9 @@ class LinkedIntegrationTrophy extends TrophyBase {
         foreach ($integrations as $integration) {
             $fields->addOption('integration', $integration->getName(), $integration->getName());
         }
+    }
+
+    public function enabled(): bool {
+        return false;
     }
 }

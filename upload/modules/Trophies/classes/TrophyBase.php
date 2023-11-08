@@ -26,4 +26,8 @@ abstract class TrophyBase {
     public function settingsPageLoad(Fields $fields, TemplateBase $template, Trophy $trophy, ?Validate $validation): void {
 
     }
+
+    public function enabled(): bool {
+        return true;
+    }
 }

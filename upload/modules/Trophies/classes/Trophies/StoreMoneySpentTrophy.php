@@ -21,4 +21,8 @@ class StoreMoneySpentTrophy extends TrophyBase {
     public function settingsPageLoad(Fields $fields, TemplateBase $template, Trophy $trophy, ?Validate $validation): void {
         $fields->add('score', Fields::NUMBER, 'Money spent on the Store', true, $trophy->exists() ? $trophy->data()->score : 0);
     }
+
+    public function enabled(): bool {
+        return false;
+    }
 }
