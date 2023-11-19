@@ -20,7 +20,7 @@ class MostTrophiesMemberListProvider extends MemberListProvider {
     protected function generator(): array {
         return [
             'SELECT user_id, COUNT(user_id) AS `count` FROM nl2_users_trophies GROUP BY user_id ORDER BY `count` DESC',
-            'follower_id',
+            'user_id',
             'count'
         ];
     }
