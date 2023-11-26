@@ -3,8 +3,10 @@
 class AccountAgeTrophy extends TrophyBase {
 
     public function __construct(User $user) {
-        $user_trophies = new UserTrophies($user);
-        $user_trophies->checkTrophyStatus('accountAge', $this->getAgeYears($user));
+        if ($user->isLoggedIn()) {
+            $user_trophies = new UserTrophies($user);
+            $user_trophies->checkTrophyStatus('accountAge', $this->getAgeYears($user));
+        }
     }
 
     public function getModule(): string {
