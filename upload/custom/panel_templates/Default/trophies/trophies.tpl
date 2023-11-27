@@ -34,7 +34,7 @@
 
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <a href="{$NEW_TROPHY_LINK}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> {$NEW_TROPHY}</a>
+                        <a href="{$NEW_TROPHY_LINK}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> {$NEW_TROPHY}</a> <a onclick="showRewardModal()" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Reward Trophy</a>
                         <hr />
 
                         <!-- Success and Error Alerts -->
@@ -122,6 +122,43 @@
         </div>
     </div>
 
+    <div class="modal fade" id="rewardModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reward Trophy to user</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="post" id="reward-trophy">
+                        <div class="form-group">
+                            <label for="inputUsername">Username</label>
+                            <input type="text" name="username" class="form-control" id="inputUsername" placeholder="Username">
+                        </div>
+                        <div class="form-group">
+                            <label for="inputTrophy">Trophy</label>
+                            <select name="trophy" id="inputTrophy" class="form-control">
+                                <option value="0">Select Trophy</option>
+                                {foreach from=$TROPHIES_LIST item=trophy}
+                                    <option value="{$trophy.id}">{$trophy.title}</option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <input type="hidden" name="token" value="{$TOKEN}">
+                        <input type="hidden" name="type" value="reward_trophy">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="deleteId" value="">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" onclick="$('#reward-trophy').submit();" class="btn btn-primary">Give Trophy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- End Wrapper -->
 </div>
 
@@ -131,6 +168,10 @@
     function showDeleteModal(id) {
         $('#deleteId').attr('value', id);
         $('#deleteModal').modal().show();
+    }
+
+    function showRewardModal() {
+        $('#rewardModal').modal().show();
     }
 
     function deleteTrophy() {

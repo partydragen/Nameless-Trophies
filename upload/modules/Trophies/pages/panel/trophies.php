@@ -25,6 +25,49 @@ require_once(ROOT_PATH . '/core/templates/backend_init.php');
 Module::loadPage($user, $pages, $cache, $smarty, [$navigation, $cc_nav, $staffcp_nav], $widgets, $template);
 
 if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
+    if (Input::exists()) {
+        $errors = [];
+
+        if (Token::check(Input::get('token'))) {
+            $validation = Validate::check($_POST, [
+                'username' => [
+                    Validate::REQUIRED => true
+                ],
+                'trophy' => [
+                    Validate::REQUIRED => true,
+                    Validate::NUMERIC => true
+                ]
+            ]);
+
+            if ($validation->passed()) {
+                $target_user = new User($_POST['username'], 'username');
+                if ($target_user->exists()) {
+                    $trophy = new Trophy($_POST['trophy']);
+                    if ($trophy->exists()) {
+                        $user_trophies = new UserTrophies($user);
+                        if (!$user_trophies->hasTrophy($trophy)) {
+                            $user_trophies->rewardTrophy($trophy);
+
+                            Session::flash('trophies_success', 'Successfully rewarded the trophy to ' . $target_user->getDisplayname(true));
+                            Redirect::to(URL::build('/panel/trophies'));
+                        } else {
+                            $errors[] = 'User already have this trophy!';
+                        }
+                    } else {
+                        $errors[] = 'Trophy not found';
+                    }
+                } else {
+                    $errors[] = 'User not found';
+                }
+            } else {
+                // Errors
+                $errors = $validation->errors();
+            }
+        } else {
+            $errors[] = $language->get('general', 'invalid_token');
+        }
+    }
+
     // View trophies
     $trophies = [];
     $trophies_query = DB::getInstance()->query('SELECT * FROM nl2_trophies');
