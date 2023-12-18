@@ -44,7 +44,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                 if ($target_user->exists()) {
                     $trophy = new Trophy($_POST['trophy']);
                     if ($trophy->exists()) {
-                        $user_trophies = new UserTrophies($user);
+                        $user_trophies = new UserTrophies($target_user);
                         if (!$user_trophies->hasTrophy($trophy)) {
                             $user_trophies->rewardTrophy($trophy);
 
