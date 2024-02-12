@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Most trophies member list provider
  *
@@ -19,7 +18,7 @@ class MostTrophiesMemberListProvider extends MemberListProvider {
 
     protected function generator(): array {
         return [
-            'SELECT user_id, COUNT(user_id) AS `count` FROM nl2_users_trophies GROUP BY user_id ORDER BY `count` DESC',
+            'SELECT user_id, COUNT(user_id) AS `count` FROM nl2_users_trophies INNER JOIN nl2_users ON nl2_users.id=user_id GROUP BY user_id ORDER BY `count` DESC',
             'user_id',
             'count'
         ];

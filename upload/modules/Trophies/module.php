@@ -27,6 +27,7 @@ class Trophies_Module extends Module {
 
         // Register Events
         EventHandler::registerEvent(Trophies\Events\UserTrophyReceivedEvent::class);
+        EventHandler::registerListener(UserDeletedEvent::class, Trophies\Listeners\UserDeletedListener::class);
 
         // Register Core Trophies
         Trophies::getInstance()->registerTrophy(new RegistrationTrophy());
