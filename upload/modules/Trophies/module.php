@@ -74,7 +74,7 @@ class Trophies_Module extends Module {
         } else {
             if ($module_version != $cache->retrieve('module_version')) {
                 // Version have changed, Perform actions
-                //$this->initialiseUpdate($cache->retrieve('module_version'));
+                $this->initialiseUpdate($cache->retrieve('module_version'));
 
                 $cache->store('module_version', $module_version);
 
@@ -165,6 +165,18 @@ class Trophies_Module extends Module {
         return [];
     }
 
+    private function initialiseUpdate($old_version) {
+        $old_version = str_replace([".", "-"], "", $old_version);
+
+        if ($old_version < 113) {
+            try {
+                DB::getInstance()->query('ALTER TABLE `nl2_users_trophies` ADD INDEX `user_id` (`user_id`)');
+            } catch (Exception $e) {
+                // Error
+            }
+        }
+    }
+
     private function initialise() {
         // Generate tables
         if (!DB::getInstance()->showTables('trophies')) {
@@ -178,6 +190,8 @@ class Trophies_Module extends Module {
         if (!DB::getInstance()->showTables('users_trophies')) {
             try {
                 DB::getInstance()->createTable("users_trophies", " `id` int(11) NOT NULL AUTO_INCREMENT, `user_id` int(11) NOT NULL, `trophy_id` int(11) NOT NULL, `received` int(11) NOT NULL, PRIMARY KEY (`id`)");
+
+                DB::getInstance()->query('ALTER TABLE `nl2_users_trophies` ADD INDEX `user_id` (`user_id`)');
             } catch (Exception $e) {
                 // Error
             }
