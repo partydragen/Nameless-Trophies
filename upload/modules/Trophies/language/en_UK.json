@@ -14,6 +14,8 @@
   "general/current_version_x": "Current module version: {{version}}",
   "general/view_resource": "View Resource",
   "general/new_version_x": "New module version: {{new_version}}",
+  "general/latest_rewarded_trophies": "Latest Rewarded Trophies",
+  "general/no_trophies_rewarded": "No trophies rewarded yet.",
   "admin/confirm_delete_trophy": "Are you sure you want to delete this trophy?",
   "admin/trophy_created_successfully": "Trophy created successfully.",
   "admin/trophy_updated_successfully": "Trophy updated successfully.",

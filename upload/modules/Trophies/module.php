@@ -6,6 +6,8 @@
  *  Trophies module initialisation file
  */
 
+use Trophies\Widgets\LatestAwardedTrophiesWidget;
+
 class Trophies_Module extends Module {
 
     private Language $_language;
@@ -106,6 +108,8 @@ class Trophies_Module extends Module {
     public function onPageLoad($user, $pages, $cache, $smarty, $navs, $widgets, $template) {
         // Register trophy after due of installation and reward issue
         Trophies::getInstance()->registerTrophy(new AccountAgeTrophy($user));
+
+        $widgets->add(new LatestAwardedTrophiesWidget($smarty, $this->_language, $this->_trophies_language, $cache));
 
         if (defined('BACK_END')) {
             if ($user->hasPermission('admincp.trophies')) {
