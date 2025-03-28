@@ -15,7 +15,7 @@ foreach ($user_trophies->getTrophies() as $trophy) {
 }
 
 // Smarty
-$smarty->assign([
+$template->getEngine()->addVariables([
     'TROPHIES' => $trophies,
     'NONE_TROPHIES' => $trophies_language->get('general', 'user_no_trophies')
 ]);

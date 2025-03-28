@@ -85,7 +85,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
         ];
     }
 
-    $smarty->assign([
+    $template->getEngine()->addVariables([
         'TROPHIES_LIST' => $trophies,
         'DELETE_LINK' => URL::build('/panel/trophies/', 'action=delete'),
         'ARE_YOU_SURE' => $language->get('general', 'are_you_sure'),
@@ -95,7 +95,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
         'NO' => $language->get('general', 'no')
     ]);
 
-    $template_file = 'trophies/trophies.tpl';
+    $template_file = 'trophies/trophies';
 } else {
     if ($_GET['action'] == 'new') {
         if (!isset($_GET['type'])) {
@@ -111,14 +111,14 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                 ];
             }
 
-            $smarty->assign([
+            $template->getEngine()->addVariables([
                 'TROPHY_TITLE' => 'Select Trophy Type',
                 'BACK' => $language->get('general', 'back'),
                 'BACK_LINK' => URL::build('/panel/trophies'),
                 'TROPHIES_TYPE_LIST' => $trophies_type_list
             ]);
 
-            $template_file = 'trophies/trophies_new_step_1.tpl';
+            $template_file = 'trophies/trophies_new_step_1';
         } else {
             // Create new trophy
             $trophy_type = Trophies::getInstance()->getTrophy($_GET['type']);
@@ -182,7 +182,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
 
             $trophy_type->settingsPageLoad($fields, $template, $trophy, $validation);
 
-            $smarty->assign([
+            $template->getEngine()->addVariables([
                 'TROPHY_TITLE' => 'Creating new trophy',
                 'BACK' => $language->get('general', 'back'),
                 'BACK_LINK' => URL::build('/panel/trophies'),
@@ -198,7 +198,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
                 })
             ');
 
-            $template_file = 'trophies/trophies_new_step_2.tpl';
+            $template_file = 'trophies/trophies_new_step_2';
         }
     } else if (isset($_GET['trophy'])) {
         // Edit existing trophy
@@ -297,7 +297,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
 
         $trophy_type->settingsPageLoad($fields, $template, $trophy, $validation);
 
-        $smarty->assign([
+        $template->getEngine()->addVariables([
             'TROPHY_TITLE' => 'Editing trophy',
             'BACK' => $language->get('general', 'back'),
             'BACK_LINK' => URL::build('/panel/trophies'),
@@ -316,7 +316,7 @@ if (!isset($_GET['action']) && !isset($_GET['trophy'])) {
             })
         ');
 
-        $template_file = 'trophies/trophies_edit.tpl';
+        $template_file = 'trophies/trophies_edit';
     } else if ($_GET['action'] == 'delete') {
         // Delete trophy
         if (Input::exists()) {
@@ -345,20 +345,20 @@ if (Session::exists('trophies_error')) {
 }
 
 if (isset($success)) {
-    $smarty->assign([
+    $template->getEngine()->addVariables([
         'SUCCESS' => $success,
         'SUCCESS_TITLE' => $language->get('general', 'success')
     ]);
 }
 
 if (isset($errors) && count($errors)) {
-    $smarty->assign([
+    $template->getEngine()->addVariables([
         'ERRORS' => $errors,
         'ERRORS_TITLE' => $language->get('general', 'error')
     ]);
 }
 
-$smarty->assign([
+$template->getEngine()->addVariables([
     'DASHBOARD' => $language->get('admin', 'dashboard'),
     'PARENT_PAGE' => PARENT_PAGE,
     'PAGE' => PANEL_PAGE,
@@ -374,4 +374,4 @@ $template->onPageLoad();
 require(ROOT_PATH . '/core/templates/panel_navbar.php');
 
 // Display template
-$template->displayTemplate($template_file, $smarty);
+$template->displayTemplate($template_file);

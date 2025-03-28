@@ -15,7 +15,7 @@ use Cache;
 use DB;
 use Language;
 use Output;
-use Smarty;
+use TemplateEngine;
 use TimeAgo;
 use Trophy;
 use User;
@@ -26,23 +26,14 @@ class LatestAwardedTrophiesWidget extends WidgetBase {
     private Language $_language;
     private Language $_trophies_language;
 
-    public function __construct(Smarty $smarty, Language $language, Language $trophies_language, Cache $cache) {
-        $this->_smarty = $smarty;
-        $this->_language = $language;
-        $this->_trophies_language = $trophies_language;
-        $this->_cache = $cache;
-
-        // Get widget
-        $widget_query = self::getData('Latest Trophies');
-
-        parent::__construct(self::parsePages($widget_query));
-
-        // Set widget variables
+    public function __construct(TemplateEngine $engine, Language $language, Language $trophies_language, Cache $cache) {
         $this->_module = 'Trophies';
         $this->_name = 'Latest Trophies';
         $this->_description = 'Displays a list of latest awarded trophies';
-        $this->_location = $widget_query->location;
-        $this->_order = $widget_query->order;
+        $this->_engine = $engine;
+        $this->_language = $language;
+        $this->_trophies_language = $trophies_language;
+        $this->_cache = $cache;
     }
 
     public function initialise(): void {
@@ -73,12 +64,12 @@ class LatestAwardedTrophiesWidget extends WidgetBase {
             ];
         }
 
-        $this->_smarty->assign([
+        $this->_engine->addVariables([
             'LATEST_REWARDED_TROPHIES' => $this->_trophies_language->get('general', 'latest_rewarded_trophies'),
             'NO_TROPHIES_REWARDED' => $this->_trophies_language->get('general', 'no_trophies_rewarded'),
             'LATEST_REWARDED_TROPHIES_LIST' => $rewarded_trophies
         ]);
 
-        $this->_content = $this->_smarty->fetch('trophies/widgets/latest_awarded_trophies.tpl');
+        $this->_content = $this->_engine->fetch('trophies/widgets/latest_awarded_trophies');
     }
 }

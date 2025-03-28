@@ -109,7 +109,7 @@ class Trophies_Module extends Module {
         // Register trophy after due of installation and reward issue
         Trophies::getInstance()->registerTrophy(new AccountAgeTrophy($user));
 
-        $widgets->add(new LatestAwardedTrophiesWidget($smarty, $this->_language, $this->_trophies_language, $cache));
+        $widgets->add(new LatestAwardedTrophiesWidget($template->getEngine(), $this->_language, $this->_trophies_language, $cache));
 
         if (defined('BACK_END')) {
             if ($user->hasPermission('admincp.trophies')) {
@@ -148,7 +148,7 @@ class Trophies_Module extends Module {
 
                 $update_check = json_decode($update_check);
                 if (!isset($update_check->error) && !isset($update_check->no_update) && isset($update_check->new_version)) {
-                    $smarty->assign(array(
+                    $template->getEngine()->addVariables([
                         'NEW_UPDATE' => (isset($update_check->urgent) && $update_check->urgent == 'true') ? $this->_trophies_language->get('general', 'new_urgent_update_available_x', ['module' => $this->getName()]) : $this->_trophies_language->get('general', 'new_update_available_x', ['module' => $this->getName()]),
                         'NEW_UPDATE_URGENT' => (isset($update_check->urgent) && $update_check->urgent == 'true'),
                         'CURRENT_VERSION' => $this->_trophies_language->get('general', 'current_version_x', [
@@ -159,7 +159,7 @@ class Trophies_Module extends Module {
                         ]),
                         'NAMELESS_UPDATE' => $this->_trophies_language->get('general', 'view_resource'),
                         'NAMELESS_UPDATE_LINK' => Output::getClean($update_check->link)
-                    ));
+                    ]);
                 }
             }
         }
