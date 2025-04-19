@@ -20,8 +20,8 @@ class Trophies_Module extends Module {
 
         $name = 'Trophies';
         $author = '<a href="https://partydragen.com" target="_blank" rel="nofollow noopener">Partydragen</a> and my <a href="https://partydragen.com/supporters/" target="_blank">Sponsors</a>';
-        $module_version = '1.1.3';
-        $nameless_version = '2.1.2';
+        $module_version = '1.1.4';
+        $nameless_version = '2.2.0';
 
         parent::__construct($this, $name, $author, $module_version, $nameless_version);
 
@@ -138,13 +138,13 @@ class Trophies_Module extends Module {
         if (isset($_GET['route']) && $user->isLoggedIn() && $user->hasPermission('admincp.update')) {
             // Page belong to this module?
             $page = $pages->getActivePage();
-            if ($page['module'] == 'Trophies') {
+            if ($page['module'] == $this->getName()) {
 
-                $cache->setCache('Trophies_module_cache');
+                $cache->setCache($this->getName() . '_module_cache');
                 if ($cache->isCached('update_check')) {
                     $update_check = $cache->retrieve('update_check');
                 } else {
-                    $update_check = Trophies_Module::updateCheck();
+                    $update_check = $this::updateCheck();
                     $cache->store('update_check', $update_check, 3600);
                 }
 
