@@ -7,6 +7,7 @@
  */
 
 use Trophies\Widgets\LatestAwardedTrophiesWidget;
+use Trophies\Widgets\UserTrophiesProfileWidget;
 
 class Trophies_Module extends Module {
 
@@ -110,6 +111,7 @@ class Trophies_Module extends Module {
         Trophies::getInstance()->registerTrophy(new AccountAgeTrophy($user));
 
         $widgets->add(new LatestAwardedTrophiesWidget($template->getEngine(), $this->_language, $this->_trophies_language, $cache));
+        $widgets->add(new UserTrophiesProfileWidget($template->getEngine(), $this->_trophies_language));
 
         if (defined('BACK_END')) {
             if ($user->hasPermission('admincp.trophies')) {
