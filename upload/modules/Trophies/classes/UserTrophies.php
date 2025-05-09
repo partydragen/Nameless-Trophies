@@ -41,7 +41,7 @@ class UserTrophies {
         return $trophies;
     }
 
-    public function checkTrophyStatus(string $trophy_type, int $score) {
+    public function checkTrophyStatus(string $trophy_type, int $score): void {
         $trophies = Trophies::getInstance()->getTrophies();
 
         if (array_key_exists($trophy_type, $trophies)) {
@@ -93,8 +93,16 @@ class UserTrophies {
 
         // Reward any groups
         $groups = json_decode($trophy->data()->reward_groups, true);
-        foreach ($groups as $group) {
-            $this->_user->addGroup($group);
+        if (count($groups)) {
+            foreach ($groups as $group) {
+                $this->_user->addGroup($group);
+            }
+
+            GroupSyncManager::getInstance()->broadcastChange(
+                $this->_user,
+                NamelessMCGroupSyncInjector::class,
+                $this->_user->getAllGroupIds(),
+            );
         }
 
         // Reward any credits?
