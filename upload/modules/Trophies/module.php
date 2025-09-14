@@ -115,6 +115,11 @@ class Trophies_Module extends Module {
         $widgets->add(new UserTrophiesProfileWidget($template->getEngine(), $this->_trophies_language));
 
         if (defined('BACK_END')) {
+            PermissionHandler::registerPermissions('Trophies', [
+                'staffcp.trophies' => $this->_language->get('moderator', 'staff_cp')  . ' &raquo; ' .  $this->_trophies_language->get('general', 'trophies'),
+                'staffcp.trophies.users' => $this->_language->get('moderator', 'staff_cp')  . ' &raquo; ' .  $this->_trophies_language->get('general', 'users_trophies')
+            ]);
+
             if ($user->hasPermission('staffcp.trophies')) {
                 $cache->setCache('panel_sidebar');
                 if (!$cache->isCached('trophies_order')) {
@@ -134,7 +139,7 @@ class Trophies_Module extends Module {
                 $navs[2]->add('trophies', $this->_trophies_language->get('general', 'trophies'), URL::build('/panel/trophies'), 'top', null, $order + 0.1, $icon);
             }
 
-            if ($user->hasPermission('staffcp.trophies'))
+            if ($user->hasPermission('staffcp.trophies.users'))
                 Core_Module::addUserAction($this->_trophies_language->get('general', 'trophies'), URL::build('/panel/users/trophies/', 'user={id}'));
         }
 

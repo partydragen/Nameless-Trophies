@@ -10,7 +10,7 @@
  *  Panel user trophies page
  */
 
-if (!$user->handlePanelPageLoad('staffcp.trophies')) {
+if (!$user->handlePanelPageLoad('staffcp.trophies.users')) {
     require_once(ROOT_PATH . '/403.php');
     die();
 }

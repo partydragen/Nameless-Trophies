@@ -1,5 +1,6 @@
 {
   "general/trophies": "Trophies",
+  "general/users_trophies": "Users Trophies",
   "general/user_trophy_received": "User received trophy",
   "general/new_trophy": "New Trophy",
   "general/received_trophy": "You have received the trophy {{trophy}}",
