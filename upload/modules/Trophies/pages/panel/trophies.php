@@ -3,7 +3,7 @@
  *  Made by Partydragen
  *  https://partydragen.com/
  *  https://github.com/partydragen/Nameless-Trophies/
- *  NamelessMC version 2.1.0
+ *  NamelessMC version 2.2.0
  *
  *  License: MIT
  *

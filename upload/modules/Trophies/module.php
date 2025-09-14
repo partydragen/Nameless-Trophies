@@ -27,6 +27,7 @@ class Trophies_Module extends Module {
 
         // Define URLs which belong to this module
         $pages->add('Trophies', '/panel/trophies', 'pages/panel/trophies.php');
+        $pages->add('Trophies', '/panel/users/trophies', 'pages/panel/users_trophies.php');
 
         // Register Events
         EventHandler::registerEvent(Trophies\Events\UserTrophyReceivedEvent::class);
@@ -114,7 +115,7 @@ class Trophies_Module extends Module {
         $widgets->add(new UserTrophiesProfileWidget($template->getEngine(), $this->_trophies_language));
 
         if (defined('BACK_END')) {
-            if ($user->hasPermission('admincp.trophies')) {
+            if ($user->hasPermission('staffcp.trophies')) {
                 $cache->setCache('panel_sidebar');
                 if (!$cache->isCached('trophies_order')) {
                     $order = 98;
@@ -132,6 +133,9 @@ class Trophies_Module extends Module {
                 }
                 $navs[2]->add('trophies', $this->_trophies_language->get('general', 'trophies'), URL::build('/panel/trophies'), 'top', null, $order + 0.1, $icon);
             }
+
+            if ($user->hasPermission('staffcp.trophies'))
+                Core_Module::addUserAction($this->_trophies_language->get('general', 'trophies'), URL::build('/panel/users/trophies/', 'user={id}'));
         }
 
         // Check for module updates

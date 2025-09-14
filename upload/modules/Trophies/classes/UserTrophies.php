@@ -21,7 +21,7 @@ class UserTrophies {
         if (isset(self::$_user_trophies_cache[$user->data()->id])) {
             $this->_trophies_data = self::$_user_trophies_cache[$user->data()->id];
         } else {
-            $trophies_query = DB::getInstance()->query('SELECT nl2_trophies.*, trophy_id, received FROM `nl2_users_trophies` INNER JOIN nl2_trophies ON trophy_id = nl2_trophies.id WHERE user_id = ?', [$this->_user->data()->id]);
+            $trophies_query = DB::getInstance()->query('SELECT `nl2_trophies`.*, `nl2_users_trophies`.`id` AS `reward_id`, `trophy_id`, `received` FROM `nl2_users_trophies` INNER JOIN `nl2_trophies` ON `trophy_id` = `nl2_trophies`.`id` WHERE `user_id` = ?', [$this->_user->data()->id]);
             if ($trophies_query->count()) {
                 foreach ($trophies_query->results() as $item) {
                     $this->_trophies_data[$item->trophy_id] = $item;
